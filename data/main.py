@@ -1,5 +1,6 @@
 # encode=UTF-8
 import os
+import sys
 import datetime
 import logging
 import pprint
@@ -11,12 +12,19 @@ def main():
     config = environment.config()
     print(config)
 
-    if environment.batch == 'true':
+    args = sys.argv
+    print(args)
+
+    if len(args) == 2 and args[1] == 'batch' and environment.batch == 'true':
         base = classes.base.base()
         base.ticker()
 
+    elif len(args) == 1:
+        logging.info('Manual execution')
+
     else:
-        logging.info('run is cansel')
+        sys.exit()
+        # logging.info('run is cansel')
 
 def makeLog(const):
     today = datetime.date.today()
