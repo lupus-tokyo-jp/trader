@@ -1,61 +1,62 @@
 # encode=UTF-8
-
+import logging
+import pprint
+import json
 import coincheck.market
 import python_bitbankcc
-import json
-import pprint
 
-# 取引範囲
-allow = int(1000)
+class base:
 
-# BitBank
-bb_pub = python_bitbankcc.public()
+    def __init__(self):
+        # 取引範囲
+        self.allow = int(1000)
 
-# CoinCheck
-market = coincheck.market
-cm1 = market.Market()
+        # BitBank
+        self.bb_pub = python_bitbankcc.public()
 
-buy = {}
-sell = {}
+        # CoinCheck
+        self.cm1 = coincheck.market.Market()
 
-def ticker(self):
-    # BitBank
-    bb_t = bb_pub.get_ticker(
-        'btc_jpy'
-    )
-    buy.setdefault("BitBank", int(bb_t["buy"]))
-    sell.setdefault("BitBank", int(bb_t["sell"]))
+    def ticker(self):
+        buy = {}
+        sell = {}
 
-    print("BitBank >")
-    pprint.pprint(bb_t)
+        # BitBank
+        bb_t = self.bb_pub.get_ticker(
+            'btc_jpy'
+        )
+        buy.setdefault("BitBank", int(bb_t["buy"]))
+        sell.setdefault("BitBank", int(bb_t["sell"]))
 
-    # CoinCheck
-    cc_t = cm1.ticker()
-    buy.setdefault("Coinckeck", int(cc_t["bid"]))
-    sell.setdefault("Coinckeck", int(cc_t["ask"]))
+        print("BitBank >")
+        pprint.pprint(bb_t)
 
-    print("CoinCheck >")
-    pprint.pprint(cc_t)
+        # CoinCheck
+        cc_t = self.cm1.ticker()
+        buy.setdefault("Coinckeck", int(cc_t["bid"]))
+        sell.setdefault("Coinckeck", int(cc_t["ask"]))
 
-    print("BUY >")
-    pprint.pprint(buy)
-    print("SELL >")
-    pprint.pprint(sell)
+        print("CoinCheck >")
+        pprint.pprint(cc_t)
 
-    # dictinary check
-    pprint.pprint("BUY MAX: " + max(buy, key=buy.get))
-    pprint.pprint("BUY MIN: " + min(buy, key=buy.get))
-    pprint.pprint("SELL MAX: " + max(sell, key=sell.get))
-    pprint.pprint("SELL MIN: " + min(sell, key=sell.get))
+        print("BUY >")
+        pprint.pprint(buy)
+        print("SELL >")
+        pprint.pprint(sell)
 
-    # trade
-    if min(sell, key=sell.get) != max(buy, key=buy.get):
-        print(min(sell, key=sell.get) + "(" + str(min(sell.values())) + ")" + "から購入して" + max(buy, key=buy.get)+ "(" + str(max(buy.values())) + ")" + "で売る")
-        print("差分:" + str(max(buy.values()) - min(sell.values())))
+        # dictinary check
+        pprint.pprint("BUY MAX: " + max(buy, key=buy.get))
+        pprint.pprint("BUY MIN: " + min(buy, key=buy.get))
+        pprint.pprint("SELL MAX: " + max(sell, key=sell.get))
+        pprint.pprint("SELL MIN: " + min(sell, key=sell.get))
 
-        if int(max(buy.values()) - min(sell.values())) < allow:
-            print("最低取引額（" + str(allow) + "）より差分が低いので取引しまてーん")
+        # trade
+        if min(sell, key=sell.get) != max(buy, key=buy.get):
+            print(min(sell, key=sell.get) + "(" + str(min(sell.values())) + ")" + "から購入して" + max(buy, key=buy.get)+ "(" + str(max(buy.values())) + ")" + "で売る")
+            print("差分:" + str(max(buy.values()) - min(sell.values())))
 
-    else:
-        print("取引しない")
+            if int(max(buy.values()) - min(sell.values())) < self.allow:
+                print("最低取引額（" + str(self.allow) + "）より差分が低いので取引しまてーん")
 
+        else:
+            print("取引しない")

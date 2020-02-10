@@ -28,9 +28,9 @@ def main():
   print("BitBank >")
   pprint.pprint(bb_t)
 
-  cc_t = cm1.ticker()
-  buy.setdefault("Coinckeck", int(cc_t["bid"]))
-  sell.setdefault("Coinckeck", int(cc_t["ask"]))
+    cc_t = cm1.ticker()
+    buy.setdefault("Coinckeck", int(cc_t["bid"]))
+    sell.setdefault("Coinckeck", int(cc_t["ask"]))
 
   print("CoinCheck >")
   pprint.pprint(cc_t)
