@@ -1,13 +1,11 @@
 # encode=UTF-8
-
+import logging
 import pprint
 import classes.base
 
-base = classes.base
-
 def main():
-    ticker = base.ticker(0)
-    print(ticker)
+    base = classes.base.base()
+    base.ticker()
 
 if __name__ == '__main__':
     main()
