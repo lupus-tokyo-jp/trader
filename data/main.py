@@ -24,7 +24,7 @@ def main():
 
     else:
         sys.exit()
-        # logging.info('run is cansel')
+        # logging.info('run is cancel')
 
 def makeLog(const):
     today = datetime.date.today()
