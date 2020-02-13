@@ -1,2 +1,7 @@
 /data/classes/__pycache__/*
+/data/__pycache__/*
 /log/*
+/.vagrant/*
+*.box
+.DS_store
+Vagrantfile
