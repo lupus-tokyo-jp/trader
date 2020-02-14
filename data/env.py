@@ -9,9 +9,20 @@ class environment:
         # Batch実行させる
         self.batch = 'false'
 
+        # 取引所の設定
+        self.exchange = [
+            'BitBank',
+            'CoinCheck'
+        ]
+
     # 定義
     def config(self):
         confd = {}
+
+        # 取引範囲
+        confd['allow'] = 1000
+
+        # 個人設定
         confd['private'] = {
             'test' : 'test message'
         }
