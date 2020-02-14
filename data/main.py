@@ -15,12 +15,13 @@ def main():
     args = sys.argv
     print(args)
 
+    base = classes.base.Base()
+
     if len(args) == 2 and args[1] == 'batch' and environment.batch == 'true':
-        base = classes.base.base()
-        base.ticker()
+        base.trade(config)
 
     elif len(args) == 1:
-        logging.info('Manual execution')
+        base.trade(config)
 
     else:
         sys.exit()
