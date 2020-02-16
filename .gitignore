@@ -1,5 +1,4 @@
-/data/classes/__pycache__/*
-/data/__pycache__/*
+*__pycache__/*
 /log/*
 /.vagrant/*
 *.box
