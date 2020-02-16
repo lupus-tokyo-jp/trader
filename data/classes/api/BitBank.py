@@ -21,7 +21,8 @@ class BitBankAPI:
         value = self.pub.get_depth(
             'btc_jpy' # ペア
         )
-        print(json.dumps(value))
+        # print(json.dumps(value))
+        return value
 
     # Public API
     def getTransactions(self):

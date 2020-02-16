@@ -18,6 +18,7 @@ def main():
     base = classes.base.Base()
 
     if len(args) == 2 and args[1] == 'batch' and environment.batch == 'true':
+        sys.exit()
         base.trade(config)
 
     elif len(args) == 1:

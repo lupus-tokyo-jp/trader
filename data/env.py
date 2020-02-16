@@ -3,8 +3,8 @@
 class environment:
     def __init__(self):
         self.base_path = '/srv/trade/'
-        self.log_path = self.base_path + 'log/'
-        self.log_conf = self.base_path + 'logging.conf'
+        self.log_path = self.base_path + 'strage/log/'
+        self.log_conf = self.log_path + 'logging.conf'
 
         # Batch実行させる
         self.batch = 'false'
