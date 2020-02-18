@@ -24,7 +24,10 @@ class environment:
 
         # 個人設定
         confd['private'] = {
-            'test' : 'test message'
+            'CoinCheck' : {
+                'access_key' : 'ccxi8LmdUkscBLa6',
+                'api_secret' : 'Nb5VkFMjjmwAvJ7tFeBBYDJhh9siM5nB'
+            }
         }
 
         return confd

@@ -10,21 +10,24 @@ import env
 def main():
     environment = env.environment()
     config = environment.config()
-    print(config)
+    # print(config)
 
     args = sys.argv
-    print(args)
+    # print(args)
 
     base = classes.base.Base()
 
     if len(args) == 2 and args[1] == 'batch' and environment.batch == 'true':
+        print('Batch')
         sys.exit()
         base.trade(config)
 
     elif len(args) == 1:
-        base.trade(config)
+        print('Manual')
+        base.trade()
 
     else:
+        print('Exit')
         sys.exit()
         # logging.info('run is cancel')
 

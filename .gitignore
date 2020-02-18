@@ -4,3 +4,6 @@
 *.box
 .DS_store
 Vagrantfile
+.code-workspace
+/.vscode/*
+/strage/**/*
