@@ -42,3 +42,11 @@ class BitBankAPI:
         response = requests.get(url)
         obj = json.loads(response.content)
         return obj
+
+    def postSell(self):
+        msg = "BitBank sell"
+        return msg
+
+    def postBuy(self):
+        msg = "BitBank buy"
+        return msg

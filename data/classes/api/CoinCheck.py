@@ -43,3 +43,10 @@ class CoinCheckAPI:
         obj = json.loads(response.content)
         return obj
 
+    def postSell(self):
+        msg = "Coincheck sell"
+        return msg
+
+    def postBuy(self):
+        msg = "Coincheck buy"
+        return msg
