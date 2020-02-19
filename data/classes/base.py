@@ -136,3 +136,25 @@ class Base:
             return result
 
         return None
+
+    # 配列内の最小値よりも大きく,配列内に存在していない値の最小値を算出する（[5,6,8] >> 7）
+    def valueNotIncluded(args: [int]):
+
+        if len(args) == 0:
+        # 空配列は０を返す
+            return 0
+
+        if len(args) == 1:
+        # 要素１つの場合は 要素+1 の値を返す
+            return args[0] + 1
+
+        min = args[0]
+        print("asks: " + str(args))
+        print("min: " + str(min) + ", check: " + str(min+1))
+
+        if min + 1 == args[1]:
+            print("...hit")
+            del args[0]
+            return valueNotIncluded(args)
+        
+        return min + 1
