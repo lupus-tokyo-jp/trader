@@ -9,6 +9,11 @@ import env
 import classes.utility
 import classes.api.BitBank
 import classes.api.CoinCheck
+from enum import Enum, auto
+
+class ValueNotIncludedType(Enum):
+    MAX = auto()
+    MIN = auto()
 
 class Base:
 
@@ -137,24 +142,37 @@ class Base:
 
         return None
 
-    # 配列内の最小値よりも大きく,配列内に存在していない値の最小値を算出する（[5,6,8] >> 7）
-    def valueNotIncluded(args: [int]):
+    # 配列内の最小値または最大値を取得する
+    # args: 最小値を求める時は昇順, 最大値を求める時は降順にソートした配列
+    # type: 最小値を求める時は .MIN, 最大値を求める時は .MAXを指定
+    def valueNotIncluded(args: [int], type: ValueNotIncludedType, index: int):
 
-        if len(args) == 0:
+        count = len(args)
+
         # 空配列は０を返す
+        if count == 0:
             return 0
-
-        if len(args) == 1:
-        # 要素１つの場合は 要素+1 の値を返す
-            return args[0] + 1
-
-        min = args[0]
-        print("asks: " + str(args))
-        print("min: " + str(min) + ", check: " + str(min+1))
-
-        if min + 1 == args[1]:
-            print("...hit")
-            del args[0]
-            return valueNotIncluded(args)
         
-        return min + 1
+        # MINの時は 最小値から順に大きくして探すため +1
+        if type == ValueNotIncludedType.MIN:
+            d = 1
+        # MAXの時は 最大値から順に小さくして探すため -1
+        elif type == ValueNotIncludedType.MAX:
+            d = -1
+            
+        # 要素１つの場合は 要素+d の値を返す
+        if count == 1:
+            return args[0] + d
+        elif count == index:
+            return args[0] + d
+
+
+        min = args[index]
+        print("asks: " + str(args))
+        print("value: " + str(min) + ", check: " + str(min+d))
+
+        if min + d == args[index+1]:
+            print("...hit")
+            return valueNotIncluded(args, type, index + 1)
+        
+        return min + d
