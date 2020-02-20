@@ -4,6 +4,9 @@ import pprint
 import pprint
 import json
 import requests
+import time
+import hashlib
+import hmac
 
 import env
 
@@ -44,9 +47,31 @@ class CoinCheckAPI:
         return obj
 
     def postSell(self):
+        endpoint = '/api/exchange/orders'
+        url = str(self.pub_endpoint + endpoint)
+
+        header = self.getRequestHeader(endpoint);
+        print(header)
+
         msg = "Coincheck sell"
         return msg
 
     def postBuy(self):
         msg = "Coincheck buy"
         return msg
+
+    def getRequestHeader(self, path: str):
+        nonce = str(round(time.time() * 1000000))
+        url = 'https://' + self.pub_endpoint + path
+        message = nonce + url
+
+        signature = hmac.new(self.config['private']['CoinCheck']['access_key'].encode('utf-8'), message.encode('utf-8'), hashlib.sha256).hexdigest()
+        header = {
+                'ACCESS-NONCE': nonce,
+                'ACCESS-KEY': self.config['private']['CoinCheck']['access_key'],
+                'ACCESS-SIGNATURE': signature
+            }
+
+        return header
+
+    def privateRequest(self, header):

@@ -26,6 +26,11 @@ class Base:
         if len(trading_route):
             pprint.pprint(trading_route['buy'] + 'から購入して' + trading_route['sell'] + 'で売却します')
 
+        print('TEST: route change >')
+        trading_route['buy'] = 'BitBank'
+        trading_route['sell'] = 'CoinCheck'
+        print(trading_route)
+
         # 買う
         buy_result = self.purchase(str(trading_route['buy']))
         pprint.pprint(buy_result)
