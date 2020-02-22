@@ -1,4 +1,5 @@
 # encode=UTF-8
+import sys
 import logging
 import pprint
 import json
@@ -34,12 +35,14 @@ class Base:
         # 買う
         buy_result = self.purchase(str(trading_route['buy']))
         pprint.pprint(buy_result)
-        logging.info('func trade > buy_result: ' + buy_result)
+        logging.info('func trade > buy_result >>> ')
+        print(buy_result)
 
         # 売る
         sell_result = self.sell(str(trading_route['sell']))
         pprint.pprint(sell_result)
-        logging.info('func trade > sell_result: ' + sell_result)
+        logging.info('func trade > sell_result >>> ')
+        print(sell_result)
 
 
 
