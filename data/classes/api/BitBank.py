@@ -19,7 +19,7 @@ class BitBankAPI:
 
         self.pub_endpoint = 'https://public.bitbank.cc/'
         self.pri_endpoint = 'https://api.bitbank.cc/v1/'
-        self.pair = 'btc_jpy'
+        self.pair = environment.pair
 
         self.requet_header = {
             'content-type': 'application/json'
@@ -93,12 +93,11 @@ class BitBankAPI:
     def setRequestHeader(self, path: str, params = None):
         nonce = str(round(time.time() * 1000))
         message = nonce + json.dumps(params)
-        print(message)
 
         signature = hmac.new(bytearray(self.config['private']['BitBank']['api_secret'], 'utf8'), bytearray(message, 'utf8'), hashlib.sha256).hexdigest()
         self.requet_header.setdefault('ACCESS-NONCE', nonce)
         self.requet_header.setdefault('ACCESS-KEY', self.config['private']['BitBank']['access_key'])
         self.requet_header.setdefault('ACCESS-SIGNATURE', signature)
 
-        print('SET REQUEST HEADERS >>>')
-        print(self.requet_header)
+        print('> SET REQUEST HEADERS : BitBank > ' + json.dumps(self.requet_header))
+        logging.info('> SET REQUEST HEADERS : BitBank > ' + json.dumps(self.requet_header))

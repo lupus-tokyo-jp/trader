@@ -10,24 +10,20 @@ import env
 def main():
     environment = env.environment()
     config = environment.config()
-    # print(config)
-
     args = sys.argv
-    # print(args)
-
     base = classes.base.Base()
 
     if len(args) == 2 and args[1] == 'batch' and environment.batch == 'true':
-        print('Batch')
+        print('[TRADER] Batch execution.')
         sys.exit()
         base.trade(config)
 
     elif len(args) == 1:
-        print('Manual')
+        print('[TRADER] Manual execution.')
         base.trade()
 
     else:
-        print('Exit')
+        print('[TRADER] Exit.')
         sys.exit()
         # logging.info('run is cancel')
 

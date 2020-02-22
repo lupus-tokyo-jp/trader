@@ -19,7 +19,7 @@ class CoinCheckAPI:
 
         self.pub_endpoint = 'https://coincheck.com/'
         self.pri_endpoint = 'https://coincheck.com/'
-        self.pair = 'btc_jpy'
+        self.pair = environment.pair
 
         self.requet_header = {
             'content-type': 'application/json'
@@ -66,10 +66,6 @@ class CoinCheckAPI:
 
         self.setRequestHeader(url, params)
 
-        print('requests >>>')
-        print(url)
-        print(params)
-
         result = requests.post(url, params = params, headers = self.requet_header)
         obj = json.loads(result.content)
 
@@ -88,10 +84,6 @@ class CoinCheckAPI:
 
         self.setRequestHeader(url, params)
 
-        print('requests >>>')
-        print(url)
-        print(params)
-
         result = requests.post(url, params = params, headers = self.requet_header)
         obj = json.loads(result.content)
 
@@ -101,9 +93,6 @@ class CoinCheckAPI:
         endpoint = 'api/exchange/orders/opens'
         url = str(self.pri_endpoint + endpoint)
         self.setRequestHeader(url)
-
-        print('postOrderOpens requests >>>')
-        print(url)
 
         result = requests.get(url, headers = self.requet_header)
         obj = json.loads(result.content)
@@ -121,5 +110,5 @@ class CoinCheckAPI:
         self.requet_header.setdefault('ACCESS-KEY', self.config['private']['CoinCheck']['access_key'])
         self.requet_header.setdefault('ACCESS-SIGNATURE', signature)
 
-        print('SET REQUEST HEADERS >>>')
-        print(self.requet_header)
+        print('> SET REQUEST HEADERS : CoinCheck > ' + json.dumps(self.requet_header))
+        logging.info('> SET REQUEST HEADERS : CoinCheck > ' + json.dumps(self.requet_header))

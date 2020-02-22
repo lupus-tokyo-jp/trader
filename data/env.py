@@ -10,10 +10,12 @@ class environment:
         self.batch = 'false'
 
         # 取引所の設定
-        self.exchange = [
+        self.exchanges = [
             'BitBank',
             'CoinCheck'
         ]
+
+        self.pair = 'btc_jpy'
 
     # 定義
     def config(self):
