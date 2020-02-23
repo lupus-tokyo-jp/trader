@@ -52,17 +52,18 @@ class BitBankAPI:
         obj = json.loads(response.content)
         return obj
 
-    def postSell(self):
+    def postSell(self, amount: int, price: int):
         endpoint = 'user/spot/order'
         url = str(self.pri_endpoint + endpoint)
 
         params = {
-            'price': 30000,
-            'amount': 10,
+            'price': price,
+            'amount': amount,
             'side': "sell",
             'pair': self.pair,
             'type': 'limit'
         }
+        logging.info('> SET REQUEST SELL PARAMS : BitBank > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
@@ -71,17 +72,18 @@ class BitBankAPI:
 
         return obj
 
-    def postBuy(self):
+    def postBuy(self, amount: int, price: int):
         endpoint = 'user/spot/order'
         url = str(self.pri_endpoint + endpoint)
 
         params = {
-            'price': 30000,
-            'amount': 10,
+            'price': price,
+            'amount': amount,
             'side': "buy",
             'pair': self.pair,
             'type': 'limit'
         }
+        logging.info('> SET REQUEST BUY PARAMS : BitBank > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 

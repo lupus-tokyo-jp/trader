@@ -53,16 +53,17 @@ class CoinCheckAPI:
         obj = json.loads(response.content)
         return obj
 
-    def postSell(self):
+    def postSell(self, amount: int, price: int):
         endpoint = 'api/exchange/orders'
         url = str(self.pri_endpoint + endpoint)
 
         params = {
-            'rate': 30000,
-            'amount': 10,
+            'rate': price,
+            'amount': amount,
             'order_type': "sell",
             'pair': self.pair
         }
+        logging.info('> SET REQUEST SELL PARAMS : CoinCheck > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
@@ -71,16 +72,17 @@ class CoinCheckAPI:
 
         return obj
 
-    def postBuy(self):
+    def postBuy(self, amount: int, price: int):
         endpoint = 'api/exchange/orders'
         url = str(self.pri_endpoint + endpoint)
 
         params = {
-            'rate': 30000,
-            'amount': 10,
+            'rate': price,
+            'amount': amount,
             'order_type': "buy",
             'pair': self.pair
         }
+        logging.info('> SET REQUEST BUY PARAMS : CoinCheck > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
