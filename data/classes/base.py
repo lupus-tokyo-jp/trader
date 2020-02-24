@@ -1,42 +1,67 @@
 # encode=UTF-8
+import sys
 import logging
 import pprint
 import json
+import importlib
 
+import env
 import classes.api.BitBank
 import classes.api.CoinCheck
 
 class Base:
 
     def __init__(self):
+        self.Testing = 0
+        self.Testing_route_buy = 'BitBank'
+        self.Testing_route_sell = 'CoinCheck'
+
+        environment = env.environment()
+        self.config = environment.config()
+        self.exchanges = environment.exchanges
+
         self.BitBank = classes.api.BitBank.BitBankAPI()
         self.CoinCheck = classes.api.CoinCheck.CoinCheckAPI()
 
     def trade(self):
-        logging.info('trade runnning > ')
+        logging.info('> trade runnning > ')
 
         tickers = self.getTickerAll()
-        print(tickers)
-        logging.info('func trade > tickers: ' + json.dumps(tickers))
+        print('> func trade > tickers: ' + json.dumps(tickers))
+        logging.info('> func trade > tickers: ' + json.dumps(tickers))
 
         trading_route = self.getTradingRoute(tickers)
-        print(trading_route)
-        logging.info('func trade > trading_route: ' + json.dumps(trading_route))
+        print('> func trade > trading_route: ' + json.dumps(trading_route))
+        logging.info('> func trade > trading_route: ' + json.dumps(trading_route))
 
-        if len(trading_route):
-            pprint.pprint(trading_route['buy'] + 'から購入して' + trading_route['sell'] + 'で売却します')
+        # テスト：売買固定
+        if self.Testing:
+            trading_route['buy']['exchange'] = self.Testing_route_buy
+            trading_route['sell']['exchange'] = self.Testing_route_sell
 
-        # 買う
-        buy_result = self.purchase(str(trading_route['buy']))
-        pprint.pprint(buy_result)
-        logging.info('func trade > buy_result: ' + buy_result)
+            print('> func trade > TEST: route change > ' + json.dumps(trading_route))
+            logging.info('> func trade > TEST: route change > ' + json.dumps(trading_route))
 
-        # 売る
-        sell_result = self.sell(str(trading_route['sell']))
-        pprint.pprint(sell_result)
-        logging.info('func trade > sell_result: ' + sell_result)
+        if len(trading_route) and trading_route['buy']['exchange'] != trading_route['sell']['exchange']:
+            msg = trading_route['buy']['exchange'] + 'から購入して' + trading_route['sell']['exchange'] + 'で売却します'
+            pprint.pprint(msg)
+            logging.info(msg)
+        else:
+            print('> func trade > route check : route not found')
+            logging.info('> func trade > route check : route not found')
+            sys.exit()
 
+        # TEST用：売買の値
+        trading_route['buy']['amount'] = 10
+        trading_route['buy']['price'] = 11000
+        trading_route['sell']['amount'] = 33
+        trading_route['sell']['price'] = 33000
 
+        # 売買
+        for case, exch in trading_route.items():
+            result = self.tradeRequests(case, exch['exchange'], exch['amount'], exch['price'])
+            print('> func trade > ' + case + '_result >>> ' + json.dumps(result))
+            logging.info('> func trade > ' + case + '_result >>> ' + json.dumps(result))
 
     def getTickerAll(self):
         tickers = {}
@@ -53,7 +78,10 @@ class Base:
         return depths
 
     def getTradingRoute(self, tickers):
-        route = {}
+        route = {
+            'buy': {},
+            'sell': {}
+        }
 
         if len(tickers) >= 2:
             buy = {}
@@ -72,35 +100,25 @@ class Base:
                     continue
 
             if len(sell) and len(buy):
-                route['buy'] = min(sell, key=sell.get)
-                route['sell'] = max(buy, key=buy.get)
+                route['buy']['exchange'] = min(sell, key=sell.get)
+                route['sell']['exchange'] = max(buy, key=buy.get)
 
         return route
 
-    def purchase(self, exch_buy: str):
+    # type(sell or buy)
+    # exch = BitCoin, CoinCheck...
+    def tradeRequests(self, case: str, exch: str, amount: int, price: int):
         result = ""
+        cases = {
+            'sell' : 'postSell',
+            'buy' : 'postBuy'
+        }
 
-        if exch_buy == 'BitBank':
-            result = self.BitBank.postBuy()
+        if exch in self.exchanges and case in cases:
+            class_name = exch + 'API'
+            module = importlib.import_module('classes.api.' + exch, 'classes.api')
+            exch_class = getattr(module, class_name)()
+            result = getattr(exch_class, cases[case])(amount, price)
+            return result
 
-        elif exch_buy == 'CoinCheck':
-            result = self.CoinCheck.postBuy()
-
-        else:
-            result = ""
-
-        return result
-
-    def sell(self, exch_sell: str):
-        result = ""
-
-        if exch_sell == 'BitBank':
-            result = self.BitBank.postSell()
-
-        elif exch_sell == 'CoinCheck':
-            result = self.CoinCheck.postSell()
-
-        else:
-            result = ""
-
-        return result
+        return None

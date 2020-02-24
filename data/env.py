@@ -10,10 +10,12 @@ class environment:
         self.batch = 'false'
 
         # 取引所の設定
-        self.exchange = [
+        self.exchanges = [
             'BitBank',
             'CoinCheck'
         ]
+
+        self.pair = 'btc_jpy'
 
     # 定義
     def config(self):
@@ -27,6 +29,10 @@ class environment:
             'CoinCheck' : {
                 'access_key' : 'ccxi8LmdUkscBLa6',
                 'api_secret' : 'Nb5VkFMjjmwAvJ7tFeBBYDJhh9siM5nB'
+            },
+            'BitBank' : {
+                'access_key' : 'a5c9dc2d-e023-4814-af9c-89c9928eab42',
+                'api_secret' : '2a807fd82ce21cb3f182ce3207baa2e40e8182bc580bb9dea041cd3da8b749f9'
             }
         }
 
