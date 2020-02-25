@@ -57,6 +57,9 @@ class BitBankAPI:
 
         response = requests.get(url)
         obj = json.loads(response.content)
+        obj = obj['data']
+        del obj['timestamp']
+        del obj['sequenceId']
         return obj
 
     def postSell(self, amount: int, price: int):
