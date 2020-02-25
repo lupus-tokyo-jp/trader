@@ -7,3 +7,4 @@ Vagrantfile
 .code-workspace
 /.vscode/*
 /strage/**/*
+*.pyc
