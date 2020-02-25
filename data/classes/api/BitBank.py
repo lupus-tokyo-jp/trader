@@ -1,6 +1,5 @@
 # encode=UTF-8
-import logging
-import pprint
+import sys
 import pprint
 import json
 import requests
@@ -10,17 +9,25 @@ import hmac
 import urllib
 
 import env
+import classes.utility
 
 class BitBankAPI:
     def __init__(self):
+        self.cls_n = __class__.__name__
+
         # Load env.
         environment = env.environment()
         self.config = environment.config()
 
+        # Set parameters
         self.pub_endpoint = 'https://public.bitbank.cc/'
         self.pri_endpoint = 'https://api.bitbank.cc/v1/'
         self.pair = environment.pair
 
+        # Load utility.
+        self.util = classes.utility.Utility()
+
+        # request header.
         self.requet_header = {
             'content-type': 'application/json'
         }
@@ -63,7 +70,7 @@ class BitBankAPI:
             'pair': self.pair,
             'type': 'limit'
         }
-        logging.info('> SET REQUEST SELL PARAMS : BitBank > ' + json.dumps(params))
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'params > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
@@ -83,7 +90,7 @@ class BitBankAPI:
             'pair': self.pair,
             'type': 'limit'
         }
-        logging.info('> SET REQUEST BUY PARAMS : BitBank > ' + json.dumps(params))
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'params > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
@@ -101,5 +108,4 @@ class BitBankAPI:
         self.requet_header.setdefault('ACCESS-KEY', self.config['private']['BitBank']['access_key'])
         self.requet_header.setdefault('ACCESS-SIGNATURE', signature)
 
-        print('> SET REQUEST HEADERS : BitBank > ' + json.dumps(self.requet_header))
-        logging.info('> SET REQUEST HEADERS : BitBank > ' + json.dumps(self.requet_header))
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'params > ' + json.dumps(params))

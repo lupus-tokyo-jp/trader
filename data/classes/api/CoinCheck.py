@@ -1,6 +1,5 @@
 # encode=UTF-8
-import logging
-import pprint
+import sys
 import pprint
 import json
 import requests
@@ -10,17 +9,25 @@ import hmac
 import urllib
 
 import env
+import classes.utility
 
 class CoinCheckAPI:
     def __init__(self):
+        self.cls_n = __class__.__name__
+
         # Load env.
         environment = env.environment()
         self.config = environment.config()
 
+        # Set parameters
         self.pub_endpoint = 'https://coincheck.com/'
         self.pri_endpoint = 'https://coincheck.com/'
         self.pair = environment.pair
 
+        # Load utility.
+        self.util = classes.utility.Utility()
+
+        # request header.
         self.requet_header = {
             'content-type': 'application/json'
         }
@@ -63,7 +70,7 @@ class CoinCheckAPI:
             'order_type': "sell",
             'pair': self.pair
         }
-        logging.info('> SET REQUEST SELL PARAMS : CoinCheck > ' + json.dumps(params))
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'params > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
@@ -82,7 +89,7 @@ class CoinCheckAPI:
             'order_type': "buy",
             'pair': self.pair
         }
-        logging.info('> SET REQUEST BUY PARAMS : CoinCheck > ' + json.dumps(params))
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'params > ' + json.dumps(params))
 
         self.setRequestHeader(url, params)
 
@@ -112,5 +119,4 @@ class CoinCheckAPI:
         self.requet_header.setdefault('ACCESS-KEY', self.config['private']['CoinCheck']['access_key'])
         self.requet_header.setdefault('ACCESS-SIGNATURE', signature)
 
-        print('> SET REQUEST HEADERS : CoinCheck > ' + json.dumps(self.requet_header))
-        logging.info('> SET REQUEST HEADERS : CoinCheck > ' + json.dumps(self.requet_header))
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'params > ' + json.dumps(self.requet_header))
