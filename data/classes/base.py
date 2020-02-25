@@ -64,18 +64,16 @@ class Base:
 
         depths = self.getDepthAll()
         trading_data = self.depthArrayFormat(depths, trading_route)
-        print(trading_data)
-        sys.exit()
-
-        # TEST用：売買の値
-        trading_route['buy']['amount'] = 10
-        trading_route['buy']['price'] = 11000
-        trading_route['sell']['amount'] = 33
-        trading_route['sell']['price'] = 33000
 
         # 売買
-        for case, exch in trading_route.items():
-            result = self.tradeRequests(case, exch['exchange'], exch['amount'], exch['price'])
+        for case, exch in trading_data.items():
+            if case == 'buy':
+                _type = ValueNotIncludedType.MIN
+            elif case == 'sell':
+                _type = ValueNotIncludedType.MAX
+
+            price = self.valueNotIncluded(exch['depth'], _type, 0)
+            result = self.tradeRequests(case, exch['exchange'], self.amount, price)
             self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'trade result > ' + case + ' > ' + json.dumps(result))
 
         trade_time = time.time() - trade_start
@@ -177,8 +175,7 @@ class Base:
     # 配列内の最小値または最大値を取得する
     # args: 最小値を求める時は昇順, 最大値を求める時は降順にソートした配列
     # type: 最小値を求める時は .MIN, 最大値を求める時は .MAXを指定
-    def valueNotIncluded(args: [int], type: ValueNotIncludedType, index: int):
-
+    def valueNotIncluded(self, args: [int], _type: ValueNotIncludedType, index: int):
         count = len(args)
 
         # 空配列は０を返す
@@ -186,10 +183,10 @@ class Base:
             return 0
 
         # MINの時は 最小値から順に大きくして探すため +1
-        if type == ValueNotIncludedType.MIN:
+        if _type == ValueNotIncludedType.MIN:
             d = 1
         # MAXの時は 最大値から順に小さくして探すため -1
-        elif type == ValueNotIncludedType.MAX:
+        elif _type == ValueNotIncludedType.MAX:
             d = -1
 
         # 要素１つの場合は 要素+d の値を返す
@@ -200,11 +197,11 @@ class Base:
 
 
         min = args[index]
-        print("asks: " + str(args))
-        print("value: " + str(min) + ", check: " + str(min+d))
+        # print("asks: " + str(args))
+        # print("value: " + str(min) + ", check: " + str(min+d))
 
         if min + d == args[index+1]:
             print("...hit")
-            return valueNotIncluded(args, type, index + 1)
+            return self.valueNotIncluded(args, _type, index + 1)
 
         return min + d
