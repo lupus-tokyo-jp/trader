@@ -47,7 +47,7 @@ if __name__ == '__main__':
     const = initialize()
 
     logging.basicConfig(
-        format='%(asctime)s [%(levelname)6s] %(name)-8s : %(message)s',
+        format='%(asctime)s [%(levelname)6s] %(name)-5s : %(message)s',
         datefmt='%Y/%m/%d %H:%M:%S',
         filename=const.log_file,
         level=logging.DEBUG

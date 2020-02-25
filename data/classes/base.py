@@ -2,6 +2,7 @@
 import sys
 import pprint
 import json
+import time
 import importlib
 
 import env
@@ -32,7 +33,8 @@ class Base:
         self.CoinCheck = classes.api.CoinCheck.CoinCheckAPI()
 
     def trade(self):
-        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'trade runnning >>>>')
+        trade_start = time.time()
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'trade runnning >>>> ')
 
         tickers = self.getTickerAll()
         self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, tickers)
@@ -64,6 +66,9 @@ class Base:
         for case, exch in trading_route.items():
             result = self.tradeRequests(case, exch['exchange'], exch['amount'], exch['price'])
             self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'trade result > ' + case + ' > ' + json.dumps(result))
+
+        trade_time = time.time() - trade_start
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'trade time > ' + str(trade_time) + 'sec')
 
     # 全ての取引所のティッカーを取得する
     def getTickerAll(self):
