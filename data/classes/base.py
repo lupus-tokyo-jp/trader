@@ -29,6 +29,7 @@ class Base:
         environment = env.environment()
         self.config = environment.config()
         self.exchanges = environment.exchanges
+        self.amount = environment.amount
 
         # Load utility.
         self.util = classes.utility.Utility()
@@ -54,12 +55,17 @@ class Base:
 
             self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, '[TEST] route change > ' + json.dumps(trading_route))
 
-        if len(trading_route) and trading_route['buy']['exchange'] != trading_route['sell']['exchange']:
-            msg = trading_route['buy']['exchange'] + 'から購入して' + trading_route['sell']['exchange'] + 'で売却します'
-            self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, msg)
-        else:
+        if len(trading_route) and trading_route['buy']['exchange'] == trading_route['sell']['exchange']:
             self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, 'route not found')
             sys.exit()
+
+        msg = trading_route['buy']['exchange'] + 'から購入して' + trading_route['sell']['exchange'] + 'で売却します'
+        self.util.outputInfo(self.cls_n, sys._getframe().f_code.co_name, msg)
+
+        depths = self.getDepthAll()
+        trading_data = self.depthArrayFormat(depths, trading_route)
+        print(trading_data)
+        sys.exit()
 
         # TEST用：売買の値
         trading_route['buy']['amount'] = 10
@@ -90,6 +96,32 @@ class Base:
         depths['CoinCheck'] = self.CoinCheck.getOrderbooks()
 
         return depths
+
+    # valueNotIncludedに渡す配列を作成
+    # asks 売り注文の情報
+    # bids 買い注文の情報
+    def depthArrayFormat(self, depths, trading_route):
+        ary = {}
+        for t_side, t_exch in trading_route.items():
+            if t_side == 'buy':
+                trading_route[t_side]['depth'] = self.removeAmount(depths[t_exch['exchange']]['asks'])
+            elif t_side == 'sell':
+                trading_route[t_side]['depth'] = self.removeAmount(depths[t_exch['exchange']]['bids'])
+            else:
+                continue
+
+        return trading_route
+
+    # depthの配列[price, amount]のamountを削る
+    def removeAmount(self, depth):
+        ary = []
+        for val in depth:
+            num = val[0]
+            if not isinstance(num, int):
+                num = int(float(val[0]))
+            ary.append(num)
+
+        return ary
 
     # どこの取引所で売買するのか決定する
     # return route = {'buy': {'exchange': 最小の売値の取引所名}, 'sell': {'exchange': 最大の買値の取引所名}}
@@ -152,14 +184,14 @@ class Base:
         # 空配列は０を返す
         if count == 0:
             return 0
-        
+
         # MINの時は 最小値から順に大きくして探すため +1
         if type == ValueNotIncludedType.MIN:
             d = 1
         # MAXの時は 最大値から順に小さくして探すため -1
         elif type == ValueNotIncludedType.MAX:
             d = -1
-            
+
         # 要素１つの場合は 要素+d の値を返す
         if count == 1:
             return args[0] + d
@@ -174,5 +206,5 @@ class Base:
         if min + d == args[index+1]:
             print("...hit")
             return valueNotIncluded(args, type, index + 1)
-        
+
         return min + d

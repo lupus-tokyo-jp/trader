@@ -16,6 +16,7 @@ class environment:
         ]
 
         self.pair = 'btc_jpy'
+        self.amount = 0.0001
 
     # 定義
     def config(self):
